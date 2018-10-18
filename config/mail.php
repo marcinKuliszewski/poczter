@@ -15,6 +15,14 @@ return [
     |            "sparkpost", "log", "array"
     |
     */
+	
+	
+	'mailgun' => [
+    'domain' => 'info@agencjainnowacji.com.pl',
+    'secret' => '3Ysh11BLBQ',
+],
+	
+	
 
     'driver' => env('MAIL_DRIVER', 'smtp'),
 
@@ -55,11 +63,7 @@ return [
     |
     */
 
-    'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
-    ],
-
+    'from' => ['address' => 'info@agencjainnowacji.com.pl', 'name' => 'Wirtualne Biuro'],
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol
@@ -84,9 +88,9 @@ return [
     |
     */
 
-    'username' => env('MAIL_USERNAME'),
+    'username' => 'info@agencjainnowacji.com.pl',
 
-    'password' => env('MAIL_PASSWORD'),
+    'password' => '3Ysh11BLBQ',
 
     /*
     |--------------------------------------------------------------------------
@@ -119,5 +123,7 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
+	 'stream' => [ 'ssl' => [ 'allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false, ], ], 
+
 
 ];

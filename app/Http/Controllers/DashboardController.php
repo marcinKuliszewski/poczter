@@ -13,6 +13,12 @@ use App\Firmy;
 use App\Mail\OrderControllers;
 use Illuminate\Support\Facades\Storage;
 
+
+    /**
+     * Odpowiada za obsłógę dashboard panelu administratora.
+     */
+
+
 class DashboardController extends Controller
 {
     protected $user;
@@ -27,6 +33,14 @@ class DashboardController extends Controller
         $this->logi=new Logi;
         $this->firmy=new Firmy;
     }
+    
+    /**
+     * Wyświetla widok dasboard dla Administratora i superadministratora  .
+     * @param 
+     * 
+     * access public
+     * @return view dashboard
+     */
     
     public function dashboard() 
     {

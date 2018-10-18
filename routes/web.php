@@ -100,12 +100,12 @@ Route::post('/upload/delete', ['as' => 'upload-remove', 'uses' =>'ImageControlle
 Route::get('kontakt_panel', function () { return view('klient.pomoc_panel'); })->name('kontakt_panel');
 Route::post('kontakt_klient', 'DodatkiController@kontakt')->name('kontakt_klient');
 
-// CRM
-Route::get('crm_lista', 'CrmController@lista')->name('crm_lista');
-Route::get('add_post', function () { return view('crm.add_post'); })->name('add_post');
-Route::post('post_save', 'CrmController@post_save')->name('post_save');
-Route::get('post_edit/{id}', 'CrmController@post_edit')->name('post_edit');
-Route::get('post_delete/{id}', 'CrmController@post_delete')->name('post_delete');
+// CMS
+Route::get('cms_lista', 'CmsController@lista')->name('cms_lista');
+Route::get('add_post', function () { return view('cms.add_post'); })->name('add_post');
+Route::post('post_save', 'CmsController@post_save')->name('post_save');
+Route::get('post_edit/{id}', 'CmsController@post_edit')->name('post_edit');
+Route::get('post_delete/{id}', 'CmsController@post_delete')->name('post_delete');
 
 //  KOPIA ZAPASOWA
 Route::get('backup_file', 'ZipArchiveController@backup_file')->name('backup_file');

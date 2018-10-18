@@ -8,6 +8,12 @@ use App\User;
 use App\UserData;
 use App\Firmy;
 
+
+    /**
+     * Obsługa dodatkowych podmiotów klienta/ urzytkownika .
+     */
+
+
 class FirmyController extends Controller
 {
  
@@ -15,72 +21,114 @@ class FirmyController extends Controller
     {
         $this->middleware('auth');
         $this->firmy=new Firmy;
-         $this->user=new User;
+        $this->user=new User;
         $this->user_data=new UserData;
     }
     
+    
+    
+     /**
+     * Dodawanie nowego podmiotu do urzytkownika/klienta.
+     * @param int $user_id
+     * 
+     * access public
+     * @return view dodaj_firme_form
+     */
     
     public function dodaj_firme($user_id) 
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $klient=$this->user_data::where('user_id',$user_id)->first();
-         return view('admin.dodaj_firme_form',compact('klient'));
-         }
-          else 
+            $klient=$this->user_data::where('user_id',$user_id)->first();
+            return view('admin.dodaj_firme_form',compact('klient'));
+        }
+         else 
         {
              return view('welcome');
         }
     }
+    
+    
+     /**
+     * Zapisanie  podmiotu .
+     * @param  Request $request
+     * 
+     * access public
+     * @return view klienci
+     */
     
     public function save_firme(Request $request) 
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-
-       $this->firmy::create([
-           'user_id'=>$request->input('user_id'),
-           'name'=>$request->input('name'),
-           'email'=>$request->input('email'),
-           'status'=>'aktywny',
-              ]);
-       
-        $person=$this->user::orderBy('name', 'asc') ->get();
-        $firmy=$this->firmy::orderBy('name', 'asc') ->get();
-        return view('admin.klienci',['person'=>$person,'firmy'=>$firmy]);
+            $this->firmy::create([
+                'user_id'=>$request->input('user_id'),
+                'name'=>$request->input('name'),
+                'email'=>$request->input('email'),
+                'status'=>'aktywny',
+                   ]);
+             $person=$this->user::orderBy('name', 'asc') ->get();
+             $firmy=$this->firmy::orderBy('name', 'asc') ->get();
+             return view('admin.klienci',['person'=>$person,'firmy'=>$firmy]);
         }
-          else 
+        else 
         {
              return view('welcome');
         }
     }
     
+    
+     /**
+     * Zawieszenie  podmiotu .
+     * @param object $klient
+     * 
+     * access public
+     * @return view superadmin
+     */
     public function zawies_firme($klient)
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $this->firmy::where('id',$klient)->update(['status'=>'zawieszony']);
-        return view('admin.superadmin',['komunikat'=>'Konto zostało zawieszone pomyślnie !']);
-   }
-          else 
+            $this->firmy::where('id',$klient)->update(['status'=>'zawieszony']);
+            return view('admin.superadmin',['komunikat'=>'Konto zostało zawieszone pomyślnie !']);
+        }
+        else 
         {
-             return view('welcome');
+            return view('welcome');
         }
-        }
+     }
     
+        
+     /**
+     * Aktywowanie  podmiotu .
+     * @param object $klient
+     * 
+     * access public
+     * @return view superadmin
+     */   
+        
     public function aktywuj_firme($klient)
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $this->firmy::where('id',$klient)->update(['status'=>'aktywny']);
-        return view('admin.superadmin',['komunikat'=>'Konto zostało aktywowane pomyślnie !']);
+            $this->firmy::where('id',$klient)->update(['status'=>'aktywny']);
+            return view('admin.superadmin',['komunikat'=>'Konto zostało aktywowane pomyślnie !']);
         }
-          else 
+        else 
         {
-             return view('welcome');
+            return view('welcome');
         }
     }
     
+    
+    
+    /**
+     * Zawieszenie  podmiotu .
+     * @param object $klient
+     * 
+     * access public
+     * @return view superadmin
+     */
      public function usun_firme($klient)
     {
          if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
@@ -94,18 +142,36 @@ class FirmyController extends Controller
         }
     }
     
+    
+    /**
+     * Edycja  podmiotu .
+     * @param object $klient
+     * 
+     * access public
+     * @return view edit_firme
+     */
+    
     public function edit_firme($klient)
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $data=$this->firmy::where('id',$klient)->first();
-        return view('admin.edit_firme',['klient'=>$data]);
-        }
-          else 
+            $data=$this->firmy::where('id',$klient)->first();
+            return view('admin.edit_firme',['klient'=>$data]);
+        } 
+        else 
         {
              return view('welcome');
         }
     }
+    
+    
+      /**
+     * Zapis po edycji  podmiotu .
+     * @param Request $request
+     * 
+     * access public
+     * @return view klienci
+     */
     
      public function save_firme_edit(Request $request) 
     {
@@ -118,11 +184,11 @@ class FirmyController extends Controller
                 'status'=>'aktywny',
               ]);
        
-        $person=$this->user::orderBy('name', 'asc') ->get();
-        $firmy=$this->firmy::orderBy('name', 'asc') ->get();
-        return view('admin.klienci',['person'=>$person,'firmy'=>$firmy]);
+            $person=$this->user::orderBy('name', 'asc') ->get();
+            $firmy=$this->firmy::orderBy('name', 'asc') ->get();
+            return view('admin.klienci',['person'=>$person,'firmy'=>$firmy]);
         }
-          else 
+        else 
         {
              return view('welcome');
         }

@@ -20,7 +20,7 @@
     @yield('head')
     
   
-    <title>POCZTER</title>
+    <title>{{ config('app.name', 'POCZTER') }}</title>
 
     <!-- Styles -->
     
@@ -96,7 +96,7 @@
                                   <a href="{{ route('kody_lista') }}" class="btn btn-default" >KODY</a>	
                              @endif
                              @if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-                                 <a class="btn btn-default" href="{{ route('crm_lista') }}">CMS</a>
+                                 <a class="btn btn-default" href="{{ route('cms_lista') }}">CMS</a>
                              @endif
                              @if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
                                 <a href="{{ route('backup_file') }}" class="btn btn-default" >KOPIA ZAPASOWA</a>	

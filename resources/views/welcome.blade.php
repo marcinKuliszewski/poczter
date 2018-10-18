@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="shortcut icon" type="image/png" href="/img/wplogo-mini.png"/>
-        <title>POCZTER</title>
+        <title>{{ config('app.name', 'POCZTER') }}</title>
         
         
         <meta name="csrf-token" content="{{ csrf_token() }}">

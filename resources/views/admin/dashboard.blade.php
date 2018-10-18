@@ -42,7 +42,7 @@
                          @endif
                          @if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
                           <div class="col-md-4 col-sm-6">
-                             <a class="" href="{{ route('crm_lista') }}"><i class="fa fa-pencil-square-o"></i> CMS </a>
+                             <a class="" href="{{ route('cms_lista') }}"><i class="fa fa-pencil-square-o"></i> CMS </a>
                           </div>
                          @endif
                          @if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')

@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserData;
 
+
+
+    /**
+     * Zbiór funkcji wolnych.
+    */
+
+
 class DodatkiController extends Controller
 {
      public function __construct()
@@ -14,6 +21,15 @@ class DodatkiController extends Controller
         $this->user=new User;
         $this->userdata=new UserData;
     }
+    
+    
+     /**
+     * Wysłanie wiadomości od klienta/uzytkownika.
+     * @param Request $request
+     * 
+     * access public
+     * @return view pomoc_wyslany
+     */
     public function kontakt(Request $request) 
     {
       $user_data=$this->userdata::where('user_id',$request->id)->first();
@@ -27,6 +43,15 @@ class DodatkiController extends Controller
       $ship->ship_kontakt($user);
       return view('klient.pomoc_wyslany',['klient'=>$user_data]);
     }
+    
+    
+    /**
+     * Pobiera listę klientów i wysyła jako podpowiedz do wyszukiwarki .
+     * @param 
+     * 
+     * access public
+     * @return json $lista
+     */
     public function szukaj_klienta() 
     {
         $user_data=$this->user::all();
@@ -37,11 +62,17 @@ class DodatkiController extends Controller
             $lista[]=$user->name;
             }
         }
-        //dd($lista);
         return response()->json(['lista'=>$lista]);
         
     }
     
+     /**
+     * Zwraca id znalezionego klienta.
+     * @param string $nazwa
+     * 
+     * access public
+     * @return json user_id
+     */
      public function szukaj_nazwa($nazwa) 
     {
         $user=$this->user::where('name',$nazwa)->first();

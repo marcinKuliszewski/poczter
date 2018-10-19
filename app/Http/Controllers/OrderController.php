@@ -21,7 +21,7 @@ class OrderController extends Controller
 
             } 
             
-            /*
+     /*
      * wysyła emaile - powiadomienia o nowej poczcie
      * 
      */
@@ -32,7 +32,7 @@ class OrderController extends Controller
                   $m->to($user['do'])->subject($user['temat']); });
 
             } 
-            /*
+    /*
      * wysyła emaile - powiadomienia o nowej poczcie
      * 
      */
@@ -43,7 +43,12 @@ class OrderController extends Controller
                   $m->to($dane['do'])->subject($dane['temat']); });
 
             } 
+     
             
+     /*
+     * wysyła emaile - zapytanie klienta (z panelu)
+     * 
+     */
      public function ship_kontakt($user) 
             {        
             Mail::send('emails.kontakt', ['tresc1'=>$user['tresc1'],'tresc2'=>$user['tresc2'],'od'=>$user['od_adres']],
@@ -51,9 +56,15 @@ class OrderController extends Controller
                   $m->to($user['do'])->subject($user['temat']); });
 
             }  
-            public function ship_nowe_haslo($user) 
+         
+            
+     /*
+     * wysyła emaile - nowe hasło dla klienta
+     * 
+     */       
+     public function ship_nowe_haslo($user) 
             {        
-           Mail::send('emails.nowe_haslo', ['login'=>$user['do'],'haslo' => $user['haslo']],
+            Mail::send('emails.nowe_haslo', ['login'=>$user['do'],'haslo' => $user['haslo']],
                   function ($m) use ($user) { $m->from($user['od_adres'], $user['od_opis']);
                   $m->to($user['do'])->subject($user['temat']); });
 

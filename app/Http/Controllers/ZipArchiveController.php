@@ -70,7 +70,5 @@ class ZipArchiveController extends Controller
         } 
     }
  
-    
-    
-    
+
 }

@@ -41,8 +41,8 @@ Route::get('/szukaj_klienta', 'DodatkiController@szukaj_klienta')->name('szukaj_
 Route::get('/szukaj_nazwa/{nazwa}', 'DodatkiController@szukaj_nazwa')->name('szukaj_nazwa');
 
 //  PANEL KLIENTA  VUE.js
-
-Route::get('/klient_vue_poczta', 'KlientvueController@klient_vue_poczta')->name('klient_vue_poczta');
+Route::get('/klient_poczta', 'PocztaController@klient_poczta')->name('klient_poczta');
+//Route::get('/klient_vue_poczta', 'KlientvueController@klient_vue_poczta')->name('klient_vue_poczta');
 
 
 

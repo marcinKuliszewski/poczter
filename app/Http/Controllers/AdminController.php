@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Storage;
 class AdminController extends Controller
 {
     protected $user;
-     protected $user_data;
-      public function __construct()
+    protected $user_data;
+    
+    public function __construct()
     {
         $this->middleware('auth');
         $this->user=new User;
@@ -32,7 +33,8 @@ class AdminController extends Controller
  * wyswietla liste klientów - całą
  * 
  */
-    public function klient_list() {
+    public function klient_list() 
+    {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
            $person=User::orderBy('name', 'asc') ->get();
@@ -41,7 +43,7 @@ class AdminController extends Controller
         }
         else 
         {
-             return view('welcome');
+            return view('welcome');
         }
     
     }
@@ -54,46 +56,45 @@ class AdminController extends Controller
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $data=UserData::where('user_id',$user_id)->first();
-        $w=compact('data');
+            $data=UserData::where('user_id',$user_id)->first();
+            $w=compact('data');
         return view('admin.klient_edit',$w);
-         }
+        }
         else 
         {
-             return view('welcome');
+            return view('welcome');
         }
     }
+    
     /*
      * Zapisuje zmiany po edycji klienta
      * 
      * 
      * 
      */
-    public function klient_save(Request $request) {
-         
-          if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+    public function klient_save(Request $request) 
+    {
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $slug=$this->sanitize($request->input('name'));
-        $this->user_data::where('id',$request->input('id'))->update([
-            'name'=>$request->input('name'),
-            'slug'=>$slug,
-            'typ'=>$request->input('typ'),
-            'status'=>$request->input('status'),
-            'email'=>$request->input('email'),
-            'tel'=>$request->input('tel'),
-            'adres'=>$request->input('adres'),
-            'poczta_info'=>$request->input('poczta_info'),
-            'description'=>$request->input('description')
-              ]);
-       
-        
+            $slug=$this->sanitize($request->input('name'));
+            $this->user_data::where('id',$request->input('id'))->update([
+                'name'=>$request->input('name'),
+                'slug'=>$slug,
+                'typ'=>$request->input('typ'),
+                'status'=>$request->input('status'),
+                'email'=>$request->input('email'),
+                'tel'=>$request->input('tel'),
+                'adres'=>$request->input('adres'),
+                'poczta_info'=>$request->input('poczta_info'),
+                'description'=>$request->input('description')
+                  ]);
             $person=$this->user::all();
             $firmy=$this->firmy::orderBy('name', 'asc') ->get();
-               return view('admin.klienci',['person'=>$person,'firmy'=>$firmy]);
-     }
+            return view('admin.klienci',['person'=>$person,'firmy'=>$firmy]);
+        }
         else 
         {
-             return view('welcome');
+            return view('welcome');
         }
                
         }
@@ -103,15 +104,15 @@ class AdminController extends Controller
      * - do tabeli user_data
      * - wysyła email startowy !!!!
      */
-     public function klient_create(Request $request)
+    public function klient_create(Request $request)
     {
       if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-         $czysty_email=$this->tasak($request->input('email'));
+        $czysty_email=$this->tasak($request->input('email'));
         $request->flash(); 
         $password = str_random(10);
         $slug=$this->sanitize($request->input('name'));
-         $this->user::create([
+        $this->user::create([
             'name'=>$request->input('name'),
             'email'=>$request->input('email'),
              'admin'=>'klient',
@@ -133,10 +134,10 @@ class AdminController extends Controller
         $this->send_start_mail($do_email);
         $data=$this->user_data::where('user_id',$nowy->id)->first();
         return view('admin.klient_edit',compact('data'));
-    }
+        }
         else 
         {
-             return view('welcome');
+            return view('welcome');
         }
         
         
@@ -144,14 +145,13 @@ class AdminController extends Controller
     
     
     
-     public function delete_user(Request $request)
+    public function delete_user(Request $request)
     {
       if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-         $us=User::where('id',$request->user_id)->first();
-    $em=$us['email'];
-    //dd($em);
-         $emm=$request->email;
+            $us=User::where('id',$request->user_id)->first();
+            $em=$us['email'];
+            $emm=$request->email;
             if($em == $emm)
             {
                User::where('email',$em)->update(['status'=>'usuniety']);
@@ -168,51 +168,52 @@ class AdminController extends Controller
         }
     }
     
-      public function supsend_user(Request $request)
+    
+    
+    public function supsend_user(Request $request)
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
             $us=User::where('id',$request->id)->first();
-       $em=$us['email'];
-       //dd($em);
+            $em=$us['email'];
             $emm=$request->email;
             if($em == $emm)
             {
-            User::where('email',$em)->update(['status'=>'zawieszony']);
-               return view('admin.superadmin',['komunikat'=>'Konto zostało zawieszone pomyślnie !']);
+                User::where('email',$em)->update(['status'=>'zawieszony']);
+                return view('admin.superadmin',['komunikat'=>'Konto zostało zawieszone pomyślnie !']);
+            }
+            else 
+            {
+                return view('admin.superadmin',['komunikat'=>'Błędne dane !']); 
+            }
+        }
+        else 
+        {
+            return view('welcome');
+        }
+    }
+    
+    
+    public function up_supsend(Request $request)
+    {
+         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+        {
+            $us=User::where('id',$request->id)->first();
+            $em=$us['email'];
+            $emm=$request->email;
+            if($em == $emm)
+            {
+               User::where('email',$em)->update(['status'=>'aktywny']);
+               return view('admin.superadmin',['komunikat'=>'Konto zostało aktywowane pomyślnie !']);
             }
             else 
             {
                return view('admin.superadmin',['komunikat'=>'Błędne dane !']); 
             }
-           }
-        else 
-        {
-             return view('welcome');
         }
-    }
-    
-       public function up_supsend(Request $request)
-    {
-         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-        {
-         $us=User::where('id',$request->id)->first();
-    $em=$us['email'];
-    //dd($em);
-         $emm=$request->email;
-         if($em == $emm)
-         {
-         User::where('email',$em)->update(['status'=>'aktywny']);
-            return view('admin.superadmin',['komunikat'=>'Konto zostało aktywowane pomyślnie !']);
-         }
-         else 
-         {
-            return view('admin.superadmin',['komunikat'=>'Błędne dane !']); 
-         }
-          }
         else 
         {
-             return view('welcome');
+            return view('welcome');
         }
     
     }
@@ -220,71 +221,63 @@ class AdminController extends Controller
     
      public function admin_create(Request $request)
     {
-       if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-        {
-        $request->flash(); 
-        $password = str_random(10);
-        
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+            {
+                $request->flash(); 
+                $password = str_random(10);
+                $this->user::create([
+                    'name'=>$request->input('name'),
+                    'email'=>$request->input('email'),
+                     'admin'=>'admin',
+                     'status'=>'aktywny',
+                    'password' => Hash::make($password),
+                ]);
 
-         $this->user::create([
-            'name'=>$request->input('name'),
-            'email'=>$request->input('email'),
-             'admin'=>'admin',
-             'status'=>'aktywny',
-            'password' => Hash::make($password),
-        ]);
-         
-         $nowy=$this->user::where('email',$request->input('email'))->first();
-          $this->user_data::create([
-              'user_id'=>$nowy->id,
-              'name'=>$request->input('name'),
-              'email'=>$request->input('email'),
-               ]);
-         
-             $do_email['haslo']=$password;
-            $do_email['email']=$request->input('email');
+                $nowy=$this->user::where('email',$request->input('email'))->first();
+                $this->user_data::create([
+                  'user_id'=>$nowy->id,
+                  'name'=>$request->input('name'),
+                  'email'=>$request->input('email'),
+                   ]);
+                $do_email['haslo']=$password;
+                $do_email['email']=$request->input('email');
 
-          
-         
-         $do_email['haslo']=$password;
-        $do_email['email']=$request->input('email');
-        
+                $do_email['haslo']=$password;
+                $do_email['email']=$request->input('email');
 
-        $this->send_start_mail($do_email);
-        $data=$this->user::where('email',$request->input('email'))->first();
-        //return view('admin.admin_edit',compact('data'));
-        return $this->admin_list();
-         }
-        else 
-        {
-             return view('welcome');
-        }
+                $this->send_start_mail($do_email);
+                return $this->admin_list();
+            }
+            else 
+            {
+                 return view('welcome');
+            }
          
     }
     
     
     
     
-     public function admin_save(Request $request) {
-         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+    public function admin_save(Request $request) 
+    {
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $slug=$this->sanitize($request->input('name'));
-        $this->user_data::where('id',$request->input('id'))->update([
-            'name'=>$request->input('name'),
-            'slug'=>$slug,
-            'typ'=>$request->input('typ'),
-            'status'=>$request->input('status'),
-            'email'=>$request->input('email'),
-            'tel'=>$request->input('tel'),
-            'adres'=>$request->input('adres'),
-            'poczta_info'=>$request->input('poczta_info'),
-            'description'=>$request->input('description')
-              ]);
-        $data=$this->user_data::where('id',$request->input('id'))->first();
-        //dd($request);
-        $w=compact('data');
-       return view('admin.admin_edit',$w);
-           }
+            $slug=$this->sanitize($request->input('name'));
+            $this->user_data::where('id',$request->input('id'))->update([
+                'name'=>$request->input('name'),
+                'slug'=>$slug,
+                'typ'=>$request->input('typ'),
+                'status'=>$request->input('status'),
+                'email'=>$request->input('email'),
+                'tel'=>$request->input('tel'),
+                'adres'=>$request->input('adres'),
+                'poczta_info'=>$request->input('poczta_info'),
+                'description'=>$request->input('description')
+                  ]);
+            $data=$this->user_data::where('id',$request->input('id'))->first();
+            $w=compact('data');
+            return view('admin.admin_edit',$w);
+        }
         else 
         {
              return view('welcome');
@@ -296,47 +289,46 @@ class AdminController extends Controller
      */
     public function send_start_mail(array $do_email)
     {
-     if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-      {
-      $user['do']=$do_email['email'];
-      $user['temat']="Rejestracja użytkownika";
-      $user['od_opis']="Wirtualne Biuro";
-      $user['od_adres']='info@agencjainnowacji.com.pl';
-      $user['haslo']=$do_email['haslo'];
-      $ship= new OrderController;
-      $ship->ship_start($user);
-      }
-      else 
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-             return view('welcome');
+            $user['do']=$do_email['email'];
+            $user['temat']="Rejestracja użytkownika";
+            $user['od_opis']="Wirtualne Biuro";
+            $user['od_adres']='info@agencjainnowacji.com.pl';
+            $user['haslo']=$do_email['haslo'];
+            $ship= new OrderController;
+            $ship->ship_start($user);
+        }
+        else 
+        {
+            return view('welcome');
         }
     }
     
     
     
-      public function admin_list() {
-          if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-        {
-        $person=$this->user->where('admin','admin')->get();
-
-        return view('admin.admini',compact('person'));
-        }
-      else 
-        {
-             return view('welcome');
-        }
-    }
-    
-     public function admin_edit($user_id)
+    public function admin_list() 
     {
-         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
- 
-        $data=UserData::where('user_id',$user_id)->first();
-        $w=compact('data');
-        return view('admin.admin_edit',$w);
+            $person=$this->user->where('admin','admin')->get();
+            return view('admin.admini',compact('person'));
         }
-      else 
+        else 
+        {
+             return view('welcome');
+        }
+    }
+    
+    public function admin_edit($user_id)
+    {
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+        {
+            $data=UserData::where('user_id',$user_id)->first();
+            $w=compact('data');
+            return view('admin.admin_edit',$w);
+        }
+        else 
         {
              return view('welcome');
         }
@@ -349,24 +341,18 @@ class AdminController extends Controller
      */
     
  
-    public function addfolder($slug, $id) {
+    public function addfolder($slug, $id) 
+    {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $directories = Storage::directories('dupa');
-        //dd($directories);
-        if(!in_array($slug,$directories))
-        {
-            $data=date('His');
-            Storage::makeDirectory('docum/'.$slug.$data); 
-            UserData::where('user_id',$id)->update(['direct_patch'=>$slug.$data]);
+            $directories = Storage::directories('dupa');
+            if(!in_array($slug,$directories))
+            {
+                $data=date('His');
+                Storage::makeDirectory('docum/'.$slug.$data); 
+                UserData::where('user_id',$id)->update(['direct_patch'=>$slug.$data]);
+            }
         }
-        }
-        else 
-        {
-           //dd($data);
-        }
-      
-        
     }
     /*
      * 
@@ -374,16 +360,16 @@ class AdminController extends Controller
      *
      */
     
-    public function kody_lista() {
-        
+    public function kody_lista() 
+    {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $kody=$this->odbiory::where('status','!=','odebrane')->orderBy('id','desc')->paginate(25);
-        return view('admin.kody_lista',['paka'=>$kody]);
+            $kody=$this->odbiory::where('status','!=','odebrane')->orderBy('id','desc')->paginate(25);
+            return view('admin.kody_lista',['paka'=>$kody]);
         }
-          else 
+        else 
         {
-          return view('welcome');
+            return view('welcome');
         }
         
     }
@@ -394,42 +380,35 @@ class AdminController extends Controller
      *
      */
     
-    public function klient_odbior($klient_id) {
+    public function klient_odbior($klient_id) 
+    {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
-        $kody=$this->odbiory::where('user_id',$klient_id)->orderBy('id','desc')->paginate(25);
-        $nazwa=$this->user::where('id',$klient_id)->first();
-        return view('admin.kody',['paka'=>$kody,'nazwa'=>$nazwa['name']]);
+            $kody=$this->odbiory::where('user_id',$klient_id)->orderBy('id','desc')->paginate(25);
+            $nazwa=$this->user::where('id',$klient_id)->first();
+            return view('admin.kody',['paka'=>$kody,'nazwa'=>$nazwa['name']]);
         }
-      else 
+        else 
         {
-             return view('welcome');
+            return view('welcome');
         }
     }
     
     public function potwierdzenie_odbior($id,$klient_id) 
-            {
-                if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-                {
-                    $data=date('Y-m-d H:i:s');
-                    $this->odbiory::where('id',$id)->update(['status'=>'odebrane','name'=>Auth::user()->name,'data_odbioru'=>$data]);
-                    $kody=$this->odbiory::where('user_id',$klient_id)->orderBy('id','desc')->paginate(25);
-                    $nazwa=$this->user::where('id',$klient_id)->first();
-                    return view('admin.kody',['paka'=>$kody,'nazwa'=>$nazwa['name']]);
-                }
-                else 
-                {
-                   return view('welcome');
-                }
+    {
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+        {
+            $data=date('Y-m-d H:i:s');
+            $this->odbiory::where('id',$id)->update(['status'=>'odebrane','name'=>Auth::user()->name,'data_odbioru'=>$data]);
+            $kody=$this->odbiory::where('user_id',$klient_id)->orderBy('id','desc')->paginate(25);
+            $nazwa=$this->user::where('id',$klient_id)->first();
+            return view('admin.kody',['paka'=>$kody,'nazwa'=>$nazwa['name']]);
+        }
+        else 
+        {
+            return view('welcome');
+        }
     }
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     public function nowe_haslo($user_id) 
@@ -443,50 +422,44 @@ class AdminController extends Controller
            
             $do_email['haslo']=$password;
             $do_email['email']=$klient->email;
-             $this->send_nowe_haslo_mail($do_email);
-             return view('admin.nowe_haslo');
-        }
-         else 
-        {
-             return view('welcome');
-        }
-    }
-    
-     public function send_nowe_haslo_mail(array $do_email)
-    {
-     if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-      {
-      $user['do']=$do_email['email'];
-      $user['temat']="Nowe Hasło";
-      $user['od_opis']="Wirtualne Biuro";
-      $user['od_adres']='info@agencjainnowacji.com.pl';
-      $user['haslo']=$do_email['haslo'];
-      $ship= new OrderController;
-      $ship->ship_nowe_haslo($user);
-      }
-      else 
-        {
-             return view('welcome');
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    public function logi_edyt() {
-        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
-        {
-        $logi=$this->logi::orderBy('created_at','desc')->paginate(25);
-        return view('admin.logi',['logi'=>$logi]);
+            $this->send_nowe_haslo_mail($do_email);
+            return view('admin.nowe_haslo');
         }
         else 
         {
-             return view('welcome');
+            return view('welcome');
+        }
+    }
+    
+    public function send_nowe_haslo_mail(array $do_email)
+    {
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+        {
+            $user['do']=$do_email['email'];
+            $user['temat']="Nowe Hasło";
+            $user['od_opis']="Wirtualne Biuro";
+            $user['od_adres']='info@agencjainnowacji.com.pl';
+            $user['haslo']=$do_email['haslo'];
+            $ship= new OrderController;
+            $ship->ship_nowe_haslo($user);
+        }
+        else 
+        {
+            return view('welcome');
+        }
+    }
+
+    
+    public function logi_edyt() 
+    {
+        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
+        {
+            $logi=$this->logi::orderBy('created_at','desc')->paginate(25);
+            return view('admin.logi',['logi'=>$logi]);
+        }
+        else 
+        {
+            return view('welcome');
         }
     }
     
@@ -511,11 +484,6 @@ class AdminController extends Controller
             $clean;
     }
     
-    public function tasak($slowo)
-    {
-                
-        return $slowo;
-    }
    
     
 }

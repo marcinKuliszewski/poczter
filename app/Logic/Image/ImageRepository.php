@@ -18,18 +18,16 @@ class ImageRepository
 {
     public function upload($form_data, $klient )
     {
-      $klient_patch_row=UserData::where('user_id',$klient)->first();
-      $klient_patch='docum/'.$klient_patch_row['direct_patch'];
+        $klient_patch_row=UserData::where('user_id',$klient)->first();
+        $klient_patch='docum/'.$klient_patch_row['direct_patch'];
         $validator = Validator::make($form_data, Image::$rules, Image::$messages);
-
-        if ($validator->fails()) {
-
+        if ($validator->fails()) 
+        {
             return Response::json([
                 'error' => true,
                 'message' => $validator->messages()->first(),
                 'code' => 400
             ], 400);
-
         }
 
         $photo = $form_data['file'];
@@ -40,16 +38,14 @@ class ImageRepository
         $allowed_filename = $this->createUniqueFilename( $filename, $extension, $klient_patch );
         $uploadSuccess1 = $this->original( $photo, $allowed_filename,$klient_patch);
 
-        if( !$uploadSuccess1 ) {
-
+        if( !$uploadSuccess1 ) 
+        {
             return Response::json([
                 'error' => true,
                 'message' => 'Server error while uploading',
                 'code' => 500
             ], 500);
-
         }
-        //$oferta_id=1;
         $sessionImage = new Image;
         $sessionImage->filename      = $allowed_filename;
         $sessionImage->original_name = $originalName;
@@ -68,9 +64,9 @@ class ImageRepository
 
     public function createUniqueFilename( $filename, $extension)
     {
-          $datefil=date('Ymd');
-           $imageToken = substr(sha1(mt_rand()), 0, 5);
-           return $filename.'-'. $datefil. '-' . $imageToken . '.' . $extension;
+        $datefil=date('Ymd');
+        $imageToken = substr(sha1(mt_rand()), 0, 5);
+        return $filename.'-'. $datefil. '-' . $imageToken . '.' . $extension;
       
     }
 
@@ -79,7 +75,6 @@ class ImageRepository
      */
     public function original( $photo, $filename, $klient_patch )
     {
-        
         $image =  Storage::putFileAs($klient_patch, $photo, $filename);
         return $image;
     }
@@ -89,7 +84,6 @@ class ImageRepository
     {
         $full_size_dir = 'docume/'.$klient.'/';
         $sessionImage = Image::where('filename', 'like', $filename)->first();
-        //dd($filename);
         if(empty($sessionImage))
         {
             return Response::json([

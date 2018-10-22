@@ -36,7 +36,7 @@ class CmsController extends Controller
            $wpisy=$this->cms::orderBy('id','desc')->paginate(25);
            return view('cms.edit_lista',compact('wpisy'));
         }
-   }
+    }
    
    /**
      * Zapisuje / tworzy   wpis w CMS .
@@ -97,8 +97,7 @@ class CmsController extends Controller
      * access public
      * @return viewedit_lista
      */  
-       
-       
+ 
     public function post_delete($id)
     {
        if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')

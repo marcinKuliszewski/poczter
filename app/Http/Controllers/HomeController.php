@@ -10,6 +10,7 @@ use App\User;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CmsController;
 
+
 class HomeController extends Controller
 {
    

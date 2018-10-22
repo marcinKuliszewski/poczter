@@ -17,8 +17,7 @@ class ImageController extends Controller
     public function __construct(ImageRepository $imageRepository)
     {
        $this->image = $imageRepository;
-        $this->user= new User;
-        
+       $this->user= new User; 
     }
 
     public function getUpload(User $user)

@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+
+/*
+ * Odpowiedzialny za obsugę korespondencji
+ * 
+ */
+
 class PocztaController extends Controller
 {
     
@@ -24,6 +30,15 @@ class PocztaController extends Controller
         $this->logi=new Logi;
     }
     
+    
+     /**
+     * Wyswietla panel dodawania dokumentów.
+     * @param  Request $request
+     * @param  int $klient
+     * 
+     * access public
+     * @return view upload
+     */
     public function add_poczta_widok(Request $request, $klient) 
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
@@ -39,6 +54,15 @@ class PocztaController extends Controller
         }
     }
     
+    
+    /**
+     * Wyświetla listę dokumentów do wysłania .
+     * @param  Request $request
+     * @param  int $klient
+     * 
+     * access public
+     * @return view edit_send_post
+     */
     public function zobacz_poczta(Request $request,$klient) 
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
@@ -56,6 +80,15 @@ class PocztaController extends Controller
              return view('welcome');
         }
     }
+    
+    
+    /**
+     * Usuwa pojedynczy dokument z bazy danych przed wysłaniem do klienta.
+     * @param  int $list
+     * 
+     * access public
+     * @return view upload
+     */
     public function delete_list($list)
     {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
@@ -71,6 +104,14 @@ class PocztaController extends Controller
             return view('welcome');
         }
     }
+    
+    /**
+     * Usuwa pojedynczy dokument z dysku przed wysłaniem do klienta.
+     * @param  int $id_file
+     * 
+     * access public
+     * @return dellete file
+     */
     
     public function delete_file($id_file)
     {
@@ -88,7 +129,16 @@ class PocztaController extends Controller
         }
     }
     
-      public function podglad_list($id_file)
+    
+    /**
+     * Pobiera pojedynczy dokument z dysku .
+     * @param  int $id_file
+     * 
+     * access public
+     * @return download file
+     */
+    
+    public function podglad_list($id_file)
     {
         $dane_listu=$this->dokumenty::where(['id'=>$id_file])->first();
         $user_data=$this->userdata::where('user_id',$dane_listu['klient_id'])->first();
@@ -101,6 +151,15 @@ class PocztaController extends Controller
         return Storage::download($file, $dane_listu['filename']);
         
     }
+    
+    
+    /**
+     * Wystła powiadomienie email o nowej poczcie, zmienia stan dokumentu dodany - wysłany  .
+     * @param  int $klient_id
+     * 
+     * access public
+     * @return view upload
+     */
     
     public function wyslij_nowapoczta($klient_id) 
     {
@@ -133,6 +192,10 @@ class PocztaController extends Controller
     
      /*
      * Kieruje polecenie do wysłania  emaila - powiadomienie o nowej poczcie 
+     * @param  int $do_email
+     * 
+     * access public
+     * @return OrderController->ship_nowapoczta($user)
      */
     public function send_nowapoczta_mail($do_email)
     {
@@ -156,6 +219,15 @@ class PocztaController extends Controller
     }
     
     
+    
+     /*
+     * Podgląd poczty klienta 
+     * @param  int $klient
+     * 
+     * access public
+     * @return view klient_poczta
+     */    
+    
     public function klient_poczta($klient) 
     {
         $klient_id=0;
@@ -172,7 +244,14 @@ class PocztaController extends Controller
         return view('klient.klient_poczta',['poczta'=>$poczta,'logi'=>$logi,'klient_id'=>$klient_id]);
     }
     
-   
+    /*
+    * Podgląd nowej (nieprzeczytanej) poczty klienta 
+    * @param  int $klient_id
+    * 
+    * access public
+    * @return view nowa_poczta
+    */    
+       
     
     public function nowa_poczta($klient_id) {
         $i=0;
@@ -193,9 +272,14 @@ class PocztaController extends Controller
     }
     
     
-     /*
-     * Kieruje polecenie do wysłania startowego emaila 
-     */
+    /*
+    * Kieruje polecenie do wysłania kodu odbioru 
+    * @param  int $klient
+    * 
+    * access public
+    * @return view wydano_kod_odbioru
+    */ 
+    
     public function kod_odbioru($klient)
     {
         $klient_id=0;
@@ -218,8 +302,16 @@ class PocztaController extends Controller
         {
            return view('klient.ponowienie_kod_odbioru',['klient_id'=>$klient_id]);
         }
-       
     }
+    
+     /*
+    * Dodaje nowy kod odbioru do bazy  
+    * @param  int $klient_id
+    * @param  int $klient_id
+    * 
+    * access public
+    * @return Odbiory::dodaj_kod($dane)
+    */ 
     
     public function zapisz_kod($klient_id,$user_data)
     {
@@ -236,15 +328,30 @@ class PocztaController extends Controller
             $this->odbiory->dodaj_kod($dane);
     }
 
+    
+      /*
+    * Zmienia status kodu odbioru na ponowiony   
+    * @param  int $klient_id
+    * 
+    * access public
+    * @return $this->kod_odbioru($klient_id)
+    */
+    
     public function ponowienie_kod_odbioru($klient_id) 
     {
         $this->odbiory::where(['user_id'=>$klient_id,'status'=>'wydany'])->update(['status'=>'ponowiony']);
         return $this->kod_odbioru($klient_id);
     }
     
+    
     /*
      * Wysyła kod odbioru przesyłek papierowych
-     */
+    * @param  int $do_email
+    * 
+    * access public
+    * @return $ship->ship_kod_odbioru($dane);
+    */
+    
     public function send_kod_mail($do_email)
     {
         
@@ -257,12 +364,16 @@ class PocztaController extends Controller
       $ship->ship_kod_odbioru($dane);
       
     }
-    public function data_odwracacz($data)
-    {
-        $dat_arr=explode('-',$data);
-        $new_date=$dat_arr[2].'-'.$dat_arr[1].'-'.$dat_arr[0];
-        return $new_date;  
-    }
+    
+   
+       
+    /*
+    * Wyswietla listę wysłanych dokumentów od data do data - panel admina
+    * @param  Request $request
+    * 
+    * access public
+    * @return view poczta_wyslana
+    */
     
     public function poczta_wyslana(Request $request) 
     {
@@ -286,10 +397,16 @@ class PocztaController extends Controller
     }
     
     
+    /*
+    * Wyszukiwarka poczty od data do data
+    * @param  Request $request
+    * 
+    * access public
+    * @return array $date_zakres
+    */
     public function poczta_wyszukiwarka(Request $request) 
     {
         $request->flash();
-        $pocz=array();
         if($request->dzien_od=='')
         {
             $od=date('Y-m-d');
@@ -311,8 +428,22 @@ class PocztaController extends Controller
         }
         $date_zakres['od']=$od;
         $date_zakres['do']=$do;
-        
         return $date_zakres;
+    }
+    
+    
+    /*
+    * Zmienia kolejność rok-miesiąc-dzień na odwrotną 
+    * @param  int $data
+    * 
+    * access public
+    * @return $new_date
+    */
+    public function data_odwracacz($data)
+    {
+        $dat_arr=explode('-',$data);
+        $new_date=$dat_arr[2].'-'.$dat_arr[1].'-'.$dat_arr[0];
+        return $new_date;  
     }
     
 }

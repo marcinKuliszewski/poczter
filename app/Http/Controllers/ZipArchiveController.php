@@ -19,7 +19,8 @@ class ZipArchiveController extends Controller
    
    
     /**
-     * Pobiera plik zip kopi zapasowej .
+     * Pobiera plik zip kopi zapasowej.
+     * Najpierw usówa poprzednią wersję.
      * @param 
      * 
      * access public
@@ -28,6 +29,7 @@ class ZipArchiveController extends Controller
     public function backup_file() {
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
+            Storage::delete('backup_bw.zip'); 
             $user_data=UserData::all();
             foreach ($user_data as $user)
                 {

@@ -21,9 +21,14 @@
                 <div class="form-group">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="id" value="{{ $data['id'] }}">
+                    <input type="hidden" name="user_id" value="{{ $data['user_id'] }}">
                     <div class="form-group">
-                        <label>Login</label>
+                    <label>Login</label>
                     <input type="taxt" name="name" class="form-control" value="{{$data['name']}}" placeholder="Login">
+                    </div>
+                    <div class="form-group">
+                    <label>Email</label>
+                    <input type="taxt" name="email" class="form-control" value="{{$data['email']}}" placeholder="Email" style="color:#f33;">
                     </div>
                     <div class="form-group">
                         <label>Status</label>
@@ -33,10 +38,7 @@
                         <label>Typ</label>
                     <input type="taxt" name="typ" class="form-control" value="{{$data['typ']}}" placeholder="Typ">
                     </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                    <input type="taxt" name="email" class="form-control" value="{{$data['email']}}" placeholder="Email">
-                    </div>
+                    
                     <div class="form-group">
                         <label>Telefon</label>
                     <input type="taxt" name="tel" class="form-control" value="{{$data['tel']}}" placeholder="Telefon">

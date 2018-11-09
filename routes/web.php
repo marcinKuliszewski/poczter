@@ -21,21 +21,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 // SUPERADMIN
-         // ZARZĄDZANIE KLIENTAMI
-Route::get('/klienci', 'AdminController@klient_list')->name('klienci');
-Route::get('/klient_edit/{user_id}', 'AdminController@klient_edit')->name('klient_edit');
-Route::post('/klient_save', 'AdminController@klient_save')->name('klient_save');
-Route::post('/klient_add', 'AdminController@klient_create')->name('klient_add');
+// 
+// 
+// ZARZĄDZANIE KLIENTAMI
+Route::get('/klienci', 'KlientController@klient_list')->name('klienci');
+Route::get('/klient_edit/{user_id}', 'KlientController@klient_edit')->name('klient_edit');
+Route::post('/klient_save', 'KlientController@klient_save')->name('klient_save');
+Route::post('/klient_add', 'KlientController@klient_create')->name('klient_add');
 Route::get('/klient_create', function () { return view('admin.klient_create'); })->middleware('auth');
 
 Route::get('/delete/{user_id}', function ($user_id) { return view('admin.delete',['user_id'=>$user_id]); })->name('delete');
-Route::post('/delete_user', 'AdminController@delete_user')->name('delete_user')->middleware('auth');
+Route::post('/delete_user', 'KlientController@delete_user')->name('delete_user')->middleware('auth');
 
 Route::get('/supsend/{user_id}', function ($user_id) { return view('admin.supsend',['user_id'=>$user_id]); })->name('supsend');
-Route::post('/supsend_user', 'AdminController@supsend_user')->name('supsend_user');
+Route::post('/supsend_user', 'KlientController@supsend_user')->name('supsend_user');
 Route::get('/up_supsend/{user_id}', function ($user_id) { return view('admin.up_supsend',['user_id'=>$user_id]); })->name('up_supsend');
-Route::post('/up_supsend_user', 'AdminController@up_supsend')->name('up_supsend_user');
-Route::get('/nowe_haslo/{user_id}', 'AdminController@nowe_haslo')->name('nowe_haslo');
+Route::post('/up_supsend_user', 'KlientController@up_supsend')->name('up_supsend_user');
+Route::get('/nowe_haslo/{user_id}', 'KlientController@nowe_haslo')->name('nowe_haslo');
 Route::get('/dashboard', 'DashboardController@dashboard')->name('dashboard');
 Route::get('/szukaj_klienta', 'DodatkiController@szukaj_klienta')->name('szukaj_klienta');
 Route::get('/szukaj_nazwa/{nazwa}', 'DodatkiController@szukaj_nazwa')->name('szukaj_nazwa');

@@ -377,6 +377,7 @@ class PocztaController extends Controller
     
     public function poczta_wyslana(Request $request) 
     {
+        $pocz=$po=array();
         if(Auth::user()->admin=='superadmin' || Auth::user()->admin=='admin')
         {
             $zakres=$this->poczta_wyszukiwarka($request);

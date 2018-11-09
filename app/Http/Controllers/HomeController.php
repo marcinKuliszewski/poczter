@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Oferta;
 use App\Logi;
 use App\User;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CmsController;
 
 
@@ -27,7 +25,7 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-       $this->add_session($request);
+      // $this->add_session($request);
        $person = Auth::user();
        if(!empty($person))
        {
@@ -62,7 +60,6 @@ class HomeController extends Controller
         else
         {
            $this->sa=User::where('admin','superadmin')->first();
-           //dd($this->sa);
            return view('auth.login',['sa'=>$this->sa]); 
         }
     }
@@ -95,12 +92,12 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     
-    public function add_session(Request $request) 
-    {
-       $cms= new CmsController;
-       $top_reklama=$cms->wpis(12)->tresc; 
-       $request->session()->put('top_reklama', $top_reklama);
-       $kod_odbioru=$cms->wpis(13)->tresc; 
-       $request->session()->put('kod_odbioru', $kod_odbioru);
-    }
+ //   public function add_session(Request $request) 
+   // {
+     //  $cms= new CmsController;
+       //$top_reklama=$cms->wpis(12)->tresc; 
+      // $request->session()->put('top_reklama', $top_reklama);
+    //   $kod_odbioru=$cms->wpis(13)->tresc; 
+    //   $request->session()->put('kod_odbioru', $kod_odbioru);
+   // }
 }
